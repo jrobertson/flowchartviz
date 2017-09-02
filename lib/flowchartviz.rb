@@ -9,17 +9,19 @@ require 'pxgraphviz'
 
 class Flowchartviz
   
+  attr_reader :raw_doc
+  
   def initialize(s)
         
     plaintext = scan(LineTree.new(s).to_a).flatten.compact.join("\n")
 
-raw_px=<<EOF
+@raw_doc=<<EOF
 <?polyrex schema='items[direction]/item[label, connection, shape]' delimiter =' # '?>
 direction: TB
-
+#{plaintext}
 EOF
 
-    @pxg = PxGraphViz.new(raw_px + plaintext)
+    @pxg = PxGraphViz.new(@raw_doc)
  
   end
   
@@ -50,7 +52,8 @@ EOF
         x[0] = nil
       else
         k = 1
-        x[0] << ' # ' + (b ? :yes : :no).to_s
+        x[0] << ' # ' + (b ? :yes : :no).to_s unless b.nil?
+        b = nil
       end
 
       scan x[1..-1],j+k, b if x.length > 1
@@ -61,5 +64,3 @@ EOF
   end
     
 end
-
-
