@@ -6,13 +6,14 @@ require 'line-tree'
 require 'pxgraphviz'
 
 
-
 class Flowchartviz
   
   attr_reader :raw_doc
   
-  def initialize(s)
-        
+  def initialize(s,truthlabels: %i(yes no))        
+    
+    @true, @false = truthlabels
+    
     plaintext = scan(LineTree.new(s).to_a).flatten.compact.join("\n")
 
 @raw_doc=<<EOF
@@ -30,6 +31,18 @@ EOF
   end
   
   alias export_as export
+  
+  def import(s)
+    @pxg = PxGraphViz.new(RXFHelper.read(s).first)
+  end
+  
+  def to_png(filename)
+    @pxg.to_png filename
+  end  
+  
+  def to_svg(filename)
+    @pxg.to_svg filename
+  end
   
   private
   
@@ -52,7 +65,7 @@ EOF
         x[0] = nil
       else
         k = 1
-        x[0] << ' # ' + (b ? :yes : :no).to_s unless b.nil?
+        x[0] << ' # ' + (b ? @true : @false).to_s unless b.nil?
         b = nil
       end
 
