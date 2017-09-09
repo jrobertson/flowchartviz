@@ -36,13 +36,18 @@ EOF
     @pxg = PxGraphViz.new(RXFHelper.read(s).first)
   end
   
-  def to_png(filename)
-    @pxg.to_png filename
+  def to_png()
+    @pxg.to_png
   end  
   
-  def to_svg(filename)
-    @pxg.to_svg filename
+  def to_svg()
+    @pxg.to_svg
   end
+   
+  def write(filename)
+    @pxg.write filename
+  end
+      
   
   private
   
