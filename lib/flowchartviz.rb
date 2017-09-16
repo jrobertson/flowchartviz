@@ -8,9 +8,9 @@ require 'pxgraphviz'
 
 class Flowchartviz
   
-  attr_reader :raw_doc
+  attr_reader :raw_doc, :pxg
   
-  def initialize(s,truthlabels: %i(yes no))        
+  def initialize(s,truthlabels: %i(yes no), style: default_stylesheet())        
     
     @true, @false = truthlabels
     
@@ -22,7 +22,7 @@ direction: TB
 #{plaintext}
 EOF
 
-    @pxg = PxGraphViz.new(@raw_doc)
+    @pxg = PxGraphViz.new(@raw_doc, style: style)
  
   end
   
@@ -80,5 +80,37 @@ EOF
     end
 
   end
+  
+  def default_stylesheet()
+
+<<STYLE
+  node { 
+    color: #0ae; 
+    fillcolor: #fff;
+    fontcolor: #061; 
+    fontname: 'Trebuchet MS';
+    fontsize: 8; 
+    margin: 0.07;
+    penwidth: 1; 
+    style: filled;
+    shape: box
+  }
+  
+  a node {
+    color: #0011ee;   
+  }
+
+  edge {
+    arrowsize: 0.5;
+    color: #999999; 
+    fontcolor: #444444; 
+    fontname: Verdana; 
+    fontsize: 8; 
+    dir: forward;
+    weight: 1;
+  }
+STYLE
+
+  end   
     
 end
