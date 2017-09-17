@@ -6,9 +6,8 @@ require 'line-tree'
 require 'pxgraphviz'
 
 
-class Flowchartviz
+class Flowchartviz < PxGraphViz
   
-  attr_reader :raw_doc, :pxg
   
   def initialize(s,truthlabels: %i(yes no), style: default_stylesheet(), 
                  delimiter: ' # ')        
@@ -40,36 +39,14 @@ class Flowchartviz
     
     schema = 'items[direction]/item[label, url, connection, shape]'    
 
-@raw_doc=<<EOF
+raw_doc=<<EOF
 <?polyrex schema='#{schema}' delimiter='#{delimiter}'?>
 direction: TB
 #{plaintext}
 EOF
 
-    @pxg = PxGraphViz.new(@raw_doc, style: style)
+    super(raw_doc, style: style)
  
-  end
-  
-  def export(file='gvml.xml')
-    File.write file, @pxg.to_doc.xml(pretty: true)    
-  end
-  
-  alias export_as export
-  
-  def import(s)
-    @pxg = PxGraphViz.new(RXFHelper.read(s).first)
-  end
-  
-  def to_png()
-    @pxg.to_png
-  end  
-  
-  def to_svg()
-    @pxg.to_svg
-  end
-   
-  def write(filename)
-    @pxg.write filename
   end
       
   
@@ -101,8 +78,8 @@ EOF
         b = nil
       end
 
-      if x[0] then
-        x[0] << ' # ' unless x[0] =~ /#/ or end_fields.empty?
+      if x[0] and end_fields.length > 0 then
+        x[0] << ' # ' unless x[0] =~ /#/
         x[0] << end_fields
       end
 
